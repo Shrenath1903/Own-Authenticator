@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generated Password</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 50px;
+        }
+        .password-container {
+            font-size: 2em;
+            margin-top: 20px;
+            color: #333;
+        }
+        .refresh {
+            margin-top: 20px;
+            font-size: 1em;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <h1>Current Password</h1>
+    <div class="password-container" id="password">Loading...</div>
+    <div class="refresh" id="refresh-time"></div>
+
+    <script>
+        async function fetchPassword() {
+            try {
+                // Fetch the current password from the Flask server
+                const response = await fetch('/get_password');
+                const data = await response.json();
+
+                // Update the password in the HTML
+                document.getElementById('password').textContent = data.password;
+
+                // Update the refresh time
+                const now = new Date();
+                document.getElementById('refresh-time').textContent = 
+                    `Last updated: ${now.toLocaleTimeString()}`;
+            } catch (error) {
+                console.error('Error fetching password:', error);
+                document.getElementById('password').textContent = 'Error fetching password';
+            }
+        }
+
+        // Fetch the password on page load
+        fetchPassword();
+
+        // Refresh the password every 60 seconds
+        setInterval(fetchPassword, 60000);
+    </script>
+</body>
+</html>
